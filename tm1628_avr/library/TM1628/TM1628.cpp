@@ -11,10 +11,11 @@
 const byte seg_addr[8]={0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07};//no bit of digital segments
 //                       SG0  SG1  SG2  SG3  SG4  SG5  SG6  SG7  DVD  VCD  MP3  PLY  PAU  PBC  RET  DTS  DDD  CL1  CL2   //name   -|
 
-TM1628::TM1628(byte _dio_pin, byte _clk_pin, byte _stb_pin) {
+TM1628::TM1628(byte _dio_pin, byte _clk_pin, byte _stb_pin, byte _max_dig=4) {
   this->_dio_pin = _dio_pin;
   this->_clk_pin = _clk_pin;
   this->_stb_pin = _stb_pin;
+  this->_max_digit = _max_dig;
 
   pinMode(_dio_pin, OUTPUT);
   pinMode(_clk_pin, OUTPUT);
@@ -120,6 +121,13 @@ void TM1628::setSymbol(byte digit, byte val, byte point){
     sendData(digit*2, SYMBOL_FONT[val] | (point * 0x80));
 }
 
+void TM1628::setDigits(byte d[10])
+{
+	for(byte i=0; i<_max_digit; i++)
+	{
+		sendData(i*2, d[i]);
+	}
+}
 
 /************ low level **********/
 void TM1628::send(byte data) {
